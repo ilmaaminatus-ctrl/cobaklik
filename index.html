@@ -5,94 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Good Night!</title>
     <style>
-        body {
-            background-color: #1a1a2e;
-            color: #f0f0f0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            overflow: hidden;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            max-width: 90%;
-        }
-
-        img {
-            width: 150px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        h1 { font-size: 1.5rem; margin-bottom: 10px; color: #ffdee9; }
-        p { font-size: 1.1rem; color: #b8b8d1; }
-
-        .battery-box {
-            font-size: 2rem;
-            margin: 20px 0;
-            color: #ff4d4d;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0.5; }
-        }
-
-        .btn {
-            background: #ffdee9;
-            color: #1a1a2e;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            text-decoration: none;
-            display: inline-block;
-        }
+        body { background-color: #1a1a2e; color: #f0f0f0; font-family: sans-serif; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); max-width: 90%; }
+        img { width: 150px; border-radius: 15px; margin-bottom: 20px; }
+        h1 { font-size: 1.5rem; color: #ffdee9; }
+        .battery-box { font-size: 2rem; margin: 20px 0; color: #ff4d4d; }
+        .btn { background: #ffdee9; color: #1a1a2e; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 20px; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <!-- Gambar GIF Lucu -->
-        <img src="https://giphy.com" alt="Sleeping Cat">
-        
+        <img src= https://giphy.com alt="Sleeping Cat">
         <h1>aku udah ngantuk nihh,<br>pengen tidurr. 🥱</h1>
         <p>bye byee... 👋</p>
-        
-        <div class="battery-box">
-            🪫 0%
-        </div>
-        
+        <div class="battery-box">🪫 0%</div>
         <h1>batrai ditubuhku bener bener dah habiss. 💤</h1>
         <p>dahh good night.</p>
-
-        <a href="#" class="btn" onclick="alert('Selamat tidur! Semoga mimpi indah ✨')">Matikan Layar</a>
+        <a href="#" class="btn" onclick="alert('Selamat tidur! ✨')">Matikan Layar</a
     </div>
-
-    <!-- Animasi Bintang Sederhana -->
-    <div style="position: fixed; top: 10%; left: 20%;">⭐</div>
-    <div style="position: fixed; top: 30%; right: 10%;">✨</div>
-    <div style="position: fixed; bottom: 20%; left: 15%;">🌟</div>
-
 </body>
 </html>
