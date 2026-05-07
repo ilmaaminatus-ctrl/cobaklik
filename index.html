@@ -18,7 +18,6 @@
       position: relative;
     }
 
-    /* Efek Bintang */
     .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
     
     .star {
@@ -34,31 +33,25 @@
       50% { opacity: 1; transform: scale(1.2); }
     }
 
-    /* Bintang Jatuh */
+    /* Bintang Jatuh - Dibuat Lebih Panjang & Cepat */
     .shooting-star {
       position: absolute;
-      top: -10px;
+      top: -50px;
       width: 2px;
-      height: 50px;
+      height: 80px;
       background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
       animation: shoot var(--duration) linear infinite;
+      z-index: 0;
     }
 
     @keyframes shoot {
       0% { transform: translateY(0) translateX(0) rotate(-45deg); opacity: 1; }
-      100% { transform: translateY(100vh) translateX(-100vh) rotate(-45deg); opacity: 0; }
+      100% { transform: translateY(120vh) translateX(-120vh) rotate(-45deg); opacity: 0; }
     }
 
-    /* Planet Luar Angkasa */
     .planet { position: absolute; border-radius: 50%; opacity: 0.7; z-index: 0; }
-    .saturn { 
-      width: 60px; height: 60px; background: #f4d03f; top: 15%; left: 10%; 
-      box-shadow: 0 0 20px #9a7d0a, inset -10px -10px 20px rgba(0,0,0,0.5); 
-    }
-    .mars { 
-      width: 35px; height: 35px; background: #e74c3c; bottom: 20%; right: 15%; 
-      box-shadow: 0 0 15px #78281f; 
-    }
+    .saturn { width: 60px; height: 60px; background: #f4d03f; top: 15%; left: 10%; box-shadow: 0 0 20px #9a7d0a; }
+    .mars { width: 35px; height: 35px; background: #e74c3c; bottom: 20%; right: 15%; box-shadow: 0 0 15px #78281f; }
 
     .card {
       position: relative;
@@ -74,7 +67,6 @@
       color: white;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.5s ease;
     }
 
     h1 {
@@ -116,7 +108,6 @@
       top: 40px;
       right: 40px;
       font-size: 50px;
-      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
       animation: float 3s infinite ease-in-out;
     }
 
@@ -137,8 +128,9 @@
 </div>
 
 <script>
-  // Membuat Bintang Berkelip
   const container = document.getElementById('starContainer');
+  
+  // Bintang Kelap-Kelip
   for (let i = 0; i < 100; i++) {
     const star = document.createElement('div');
     star.className = 'star';
@@ -150,15 +142,17 @@
     container.appendChild(star);
   }
 
-  // Membuat Bintang Jatuh Otomatis
-  setInterval(() => {
+  // Bintang Jatuh Rewa-Rewi (Muncul tiap 1.5 detik)
+  function createShootingStar() {
     const sStar = document.createElement('div');
     sStar.className = 'shooting-star';
-    sStar.style.left = Math.random() * 100 + '%';
-    sStar.style.setProperty('--duration', '1.5s');
+    sStar.style.left = Math.random() * 150 + '%'; // Biar rewa rewi dari berbagai sisi
+    sStar.style.setProperty('--duration', (Math.random() * 1 + 1) + 's');
     container.appendChild(sStar);
-    setTimeout(() => sStar.remove(), 2000);
-  }, 4000);
+    setTimeout(() => sStar.remove(), 2500);
+  }
+
+  setInterval(createShootingStar, 1500); // Frekuensi lebih sering
 
   const texts = [
     "Haii",
@@ -170,12 +164,13 @@
     "Jadi aku pamit dulu",
     "Besok kita lanjut hidup lagi",
     "Good night 😴",
-    "" // Akhir tanpa teks
+    "" 
   ];
 
+  // Pastikan link gambar ini benar sesuai file di GitHub kamu
   const images = [
-    "https://githubusercontent.com", // Pentol Senyum
-    "https://githubusercontent.com"  // Bye World
+    "https://githubusercontent.com", 
+    "https://githubusercontent.com"
   ];
 
   let index = 0;
@@ -193,11 +188,11 @@
         textElement.innerText = texts[index];
         textElement.style.opacity = 1;
 
-        if (index === 8) { // Saat Good Night
+        if (index === 8) { // Good Night
           meme.src = images[0];
           meme.style.display = "inline-block";
         } 
-        else if (index === 9) { // Teks Terakhir (Hanya Gambar)
+        else if (index === 9) { // Gambar Terakhir
           textElement.style.display = "none";
           meme.src = images[1];
           btn.style.display = "none";
