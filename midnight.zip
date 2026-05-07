@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Good Night 🌙</title>
+
+  <style>
+    body{
+      margin:0;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:linear-gradient(to bottom,#1e1e2f,#3b3b5c);
+      font-family:Arial, sans-serif;
+      overflow:hidden;
+    }
+
+    .card{
+      width:85%;
+      max-width:350px;
+      background:rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      border-radius:25px;
+      padding:30px 20px;
+      text-align:center;
+      color:white;
+      box-shadow:0 8px 30px rgba(0,0,0,0.3);
+    }
+
+    h1{
+      font-size:24px;
+      min-height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      line-height:1.5;
+    }
+
+    button{
+      border:none;
+      padding:12px 28px;
+      border-radius:15px;
+      background:white;
+      color:#333;
+      font-size:16px;
+      cursor:pointer;
+      margin-top:10px;
+    }
+
+    img{
+      width:220px;
+      height:220px;
+      object-fit:cover;
+      border-radius:20px;
+      margin-top:15px;
+      display:none;
+      box-shadow:0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .moon{
+      position:absolute;
+      top:30px;
+      right:30px;
+      font-size:40px;
+      animation:float 2s infinite ease-in-out;
+    }
+
+    @keyframes float{
+      0%{transform:translateY(0);}
+      50%{transform:translateY(-10px);}
+      100%{transform:translateY(0);}
+    }
+  </style>
+</head>
+<body>
+
+<div class="moon">🌙</div>
+
+<div class="card">
+
+  <h1 id="text">Haii</h1>
+
+  <img 
+    id="meme"
+    src="aa99d98250a5d0dc22341679d1450be1.jpg"
+    alt="sleepy"
+  >
+
+  <button onclick="nextText()" id="btn">
+    next
+  </button>
+
+</div>
+
+<script>
+
+const texts = [
+  "Haii",
+  "Pengumuman penting",
+  "Aku resmi mengundurkan diri",
+  "Dari dunia sadar untuk sementara",
+  "Karena kasur sudah memanggil dengan tulus",
+  "Bantal juga sudah menunggu",
+  "Selimut siap menyambut",
+  "Jadi aku pamit dulu",
+  "Besok kita lanjut hidup lagi",
+  "Good night 😴",
+  "Terima kasih sudah membuka link inii 🤍"
+];
+
+let index = 0;
+
+function nextText(){
+
+  index++;
+
+  if(index < texts.length){
+
+    document.getElementById("text").innerText = texts[index];
+
+    if(index >= 8){
+      document.getElementById("meme").style.display = "block";
+    }
+
+  } else {
+
+    document.getElementById("text").innerText = "Selesaiii 🌙";
+    
+    document.getElementById("btn").style.display = "none";
+  }
+}
+
+</script>
+
+</body>
+</html>
