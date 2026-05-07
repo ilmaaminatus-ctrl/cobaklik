@@ -18,15 +18,9 @@
       position: relative;
     }
 
-    .stars {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
+    /* Efek Bintang */
+    .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+    
     .star {
       position: absolute;
       background: white;
@@ -38,6 +32,32 @@
     @keyframes twinkle {
       0%, 100% { opacity: 0.3; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Bintang Jatuh */
+    .shooting-star {
+      position: absolute;
+      top: -10px;
+      width: 2px;
+      height: 50px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+      animation: shoot var(--duration) linear infinite;
+    }
+
+    @keyframes shoot {
+      0% { transform: translateY(0) translateX(0) rotate(-45deg); opacity: 1; }
+      100% { transform: translateY(100vh) translateX(-100vh) rotate(-45deg); opacity: 0; }
+    }
+
+    /* Planet Luar Angkasa */
+    .planet { position: absolute; border-radius: 50%; opacity: 0.7; z-index: 0; }
+    .saturn { 
+      width: 60px; height: 60px; background: #f4d03f; top: 15%; left: 10%; 
+      box-shadow: 0 0 20px #9a7d0a, inset -10px -10px 20px rgba(0,0,0,0.5); 
+    }
+    .mars { 
+      width: 35px; height: 35px; background: #e74c3c; bottom: 20%; right: 15%; 
+      box-shadow: 0 0 15px #78281f; 
     }
 
     .card {
@@ -77,75 +97,85 @@
       font-size: 16px;
       cursor: pointer;
       margin-top: 20px;
-      box-shadow: 0 4px 15px rgba(255,255,255,0.2);
     }
 
     img {
-      width: 200px;
-      height: 200px;
-      object-fit: cover;
+      width: 220px;
+      height: 220px;
+      object-fit: contain;
       border-radius: 20px;
       margin-top: 15px;
       display: none;
       animation: fadeIn 1s ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .moon {
       position: absolute;
       top: 40px;
       right: 40px;
       font-size: 50px;
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
       animation: float 3s infinite ease-in-out;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-    }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
   </style>
 </head>
 <body>
 
 <div class="stars" id="starContainer"></div>
+<div class="planet saturn"></div>
+<div class="planet mars"></div>
 <div class="moon">🌙</div>
 
 <div class="card">
   <h1 id="text">Haii</h1>
-  <img id="meme" src="https://raw.githubusercontent.com/ilmaaminatus-ctrl/cobaklik/refs/heads/main/aa99d98250a5d0dc22341679d1450be1.jpg" alt="sleepy">
+  <img id="meme" src="" alt="sleepy">
   <button onclick="nextText()" id="btn">Next ✨</button>
 </div>
 
 <script>
+  // Membuat Bintang Berkelip
   const container = document.getElementById('starContainer');
   for (let i = 0; i < 100; i++) {
     const star = document.createElement('div');
     star.className = 'star';
-    const size = Math.random() * 3 + 'px';
-    star.style.width = size;
-    star.style.height = size;
+    star.style.width = Math.random() * 3 + 'px';
+    star.style.height = star.style.width;
     star.style.top = Math.random() * 100 + '%';
     star.style.left = Math.random() * 100 + '%';
     star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
     container.appendChild(star);
   }
 
+  // Membuat Bintang Jatuh Otomatis
+  setInterval(() => {
+    const sStar = document.createElement('div');
+    sStar.className = 'shooting-star';
+    sStar.style.left = Math.random() * 100 + '%';
+    sStar.style.setProperty('--duration', '1.5s');
+    container.appendChild(sStar);
+    setTimeout(() => sStar.remove(), 2000);
+  }, 4000);
+
   const texts = [
     "Haii",
     "Pengumuman penting",
     "Aku resmi mengundurkan diri",
     "Dari dunia sadar untuk sementara",
-    "Karena kasur sudah memanggil dengan tulus",
+    "Karena kasur sudah memanggil",
     "Bantal juga sudah menunggu",
-    "Selimut siap menyambut",
     "Jadi aku pamit dulu",
     "Besok kita lanjut hidup lagi",
     "Good night 😴",
-    "Terima kasih sudah membuka link inii 🤍"
+    "" // Akhir tanpa teks
+  ];
+
+  const images = [
+    "https://githubusercontent.com", // Pentol Senyum
+    "https://githubusercontent.com"  // Bye World
   ];
 
   let index = 0;
@@ -158,16 +188,21 @@
 
     if (index < texts.length) {
       textElement.style.opacity = 0;
+      
       setTimeout(() => {
         textElement.innerText = texts[index];
         textElement.style.opacity = 1;
-        if (index >= 9) { 
+
+        if (index === 8) { // Saat Good Night
+          meme.src = images[0];
           meme.style.display = "inline-block";
+        } 
+        else if (index === 9) { // Teks Terakhir (Hanya Gambar)
+          textElement.style.display = "none";
+          meme.src = images[1];
+          btn.style.display = "none";
         }
       }, 400);
-    } else {
-      textElement.innerText = "Selesaiii 🌙";
-      btn.style.display = "none";
     }
   }
 </script>
