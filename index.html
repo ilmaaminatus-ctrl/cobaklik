@@ -1,206 +1,139 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Good Night 🌙</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday! ✨</title>
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-      font-family: 'Arial', sans-serif;
+      background: #0a0a0a;
       overflow: hidden;
-      position: relative;
-    }
-
-    .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
-    
-    .star {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-      opacity: 0.5;
-      animation: twinkle var(--duration) infinite ease-in-out;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    /* Bintang Jatuh - Dibuat Lebih Panjang & Cepat */
-    .shooting-star {
-      position: absolute;
-      top: -50px;
-      width: 2px;
-      height: 80px;
-      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
-      animation: shoot var(--duration) linear infinite;
-      z-index: 0;
-    }
-
-    @keyframes shoot {
-      0% { transform: translateY(0) translateX(0) rotate(-45deg); opacity: 1; }
-      100% { transform: translateY(120vh) translateX(-120vh) rotate(-45deg); opacity: 0; }
-    }
-
-    .planet { position: absolute; border-radius: 50%; opacity: 0.7; z-index: 0; }
-    .saturn { width: 60px; height: 60px; background: #f4d03f; top: 15%; left: 10%; box-shadow: 0 0 20px #9a7d0a; }
-    .mars { width: 35px; height: 35px; background: #e74c3c; bottom: 20%; right: 15%; box-shadow: 0 0 15px #78281f; }
-
-    .card {
-      position: relative;
-      z-index: 1;
-      width: 85%;
-      max-width: 350px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border-radius: 25px;
-      padding: 30px 20px;
-      text-align: center;
-      color: white;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    h1 {
-      font-size: 22px;
-      min-height: 100px;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
       display: flex;
-      align-items: center;
       justify-content: center;
-      line-height: 1.5;
-      transition: opacity 0.4s ease;
+      align-items: center;
+      height: 100vh;
+      color: white;
     }
 
-    button {
-      border: none;
-      padding: 12px 35px;
-      border-radius: 50px;
-      background: white;
-      color: #1e1e2f;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
+    canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
 
-    img {
-      width: 220px;
-      height: 220px;
-      object-fit: contain;
-      border-radius: 20px;
-      margin-top: 15px;
-      display: none;
-      animation: fadeIn 1s ease;
-    }
+    .content { position: relative; z-index: 1; text-align: center; display: none; }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    /* Desain Kue Lucu */
+    .cake { position: relative; width: 120px; height: 60px; background: #FFB6C1; border-radius: 10px 10px 0 0; margin: 40px auto 0; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    .cake::before { content: ""; position: absolute; width: 140px; height: 40px; background: #FF69B4; bottom: -40px; left: -10px; border-radius: 10px; }
+    .cake::after { content: ""; position: absolute; width: 160px; height: 15px; background: #fff; bottom: -50px; left: -20px; border-radius: 20px; }
+    
+    /* Lilin Hidup */
+    .candle { position: absolute; width: 8px; height: 30px; background: #fff; top: -30px; left: 50%; transform: translateX(-50%); border-radius: 4px; display: none; }
+    .flame { position: absolute; width: 12px; height: 18px; background: #FFA500; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; top: -18px; left: -2px; animation: flicker 0.1s infinite alternate; box-shadow: 0 0 10px #FFD700; }
 
-    .moon {
-      position: absolute;
-      top: 40px;
-      right: 40px;
-      font-size: 50px;
-      animation: float 3s infinite ease-in-out;
-    }
+    @keyframes flicker { from { transform: scale(1) rotate(-2deg); } to { transform: scale(1.1) rotate(2deg); } }
 
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    /* Animasi Teks */
+    #message { font-size: 2.5rem; margin-top: 80px; min-height: 60px; }
+    .word { display: inline-block; opacity: 0; transform: scale(0.5); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0 8px; }
+    .word.pop { opacity: 1; transform: scale(1); }
+
+    .btn-start { padding: 15px 30px; font-size: 1.2rem; background: #FF69B4; border: none; border-radius: 50px; color: white; cursor: pointer; box-shadow: 0 0 20px rgba(255,105,180,0.5); z-index: 2; transition: 0.3s; }
+    .btn-start:hover { transform: scale(1.1); background: #ff1493; }
   </style>
 </head>
 <body>
 
-<div class="stars" id="starContainer"></div>
-<div class="planet saturn"></div>
-<div class="planet mars"></div>
-<div class="moon">🌙</div>
+<canvas id="fwCanvas"></canvas>
 
-<div class="card">
-  <h1 id="text">Haii</h1>
-  <img id="meme" src="" alt="sleepy">
-  <button onclick="nextText()" id="btn">Next ✨</button>
+<button class="btn-start" id="startBtn" onclick="initSurprise()">Buka Kado ✨</button>
+
+<div class="content" id="mainContent">
+  <div class="cake">
+    <div class="candle" id="candle">
+      <div class="flame"></div>
+    </div>
+  </div>
+  <div id="message"></div>
 </div>
 
 <script>
-  const container = document.getElementById('starContainer');
-  
-  // Bintang Kelap-Kelip
-  for (let i = 0; i < 100; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    star.style.width = Math.random() * 3 + 'px';
-    star.style.height = star.style.width;
-    star.style.top = Math.random() * 100 + '%';
-    star.style.left = Math.random() * 100 + '%';
-    star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
-    container.appendChild(star);
-  }
+  const canvas = document.getElementById('fwCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
 
-  // Bintang Jatuh Rewa-Rewi (Muncul tiap 1.5 detik)
-  function createShootingStar() {
-    const sStar = document.createElement('div');
-    sStar.className = 'shooting-star';
-    sStar.style.left = Math.random() * 150 + '%'; // Biar rewa rewi dari berbagai sisi
-    sStar.style.setProperty('--duration', (Math.random() * 1 + 1) + 's');
-    container.appendChild(sStar);
-    setTimeout(() => sStar.remove(), 2500);
-  }
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize);
+  resize();
 
-  setInterval(createShootingStar, 1500); // Frekuensi lebih sering
-
-  const texts = [
-    "Haii",
-    "Pengumuman penting",
-    "Aku resmi mengundurkan diri",
-    "Dari dunia sadar untuk sementara",
-    "Karena kasur sudah memanggil",
-    "Bantal juga sudah menunggu",
-    "Jadi aku pamit dulu",
-    "Besok kita lanjut hidup lagi",
-    "Good night 😴",
-    "" 
-  ];
-
-  // Pastikan link gambar ini benar sesuai file di GitHub kamu
-  const images = [
-    "https://githubusercontent.com", 
-    "https://githubusercontent.com"
-  ];
-
-  let index = 0;
-
-  function nextText() {
-    index++;
-    const textElement = document.getElementById("text");
-    const btn = document.getElementById("btn");
-    const meme = document.getElementById("meme");
-
-    if (index < texts.length) {
-      textElement.style.opacity = 0;
-      
-      setTimeout(() => {
-        textElement.innerText = texts[index];
-        textElement.style.opacity = 1;
-
-        if (index === 8) { // Good Night
-          meme.src = images[0];
-          meme.style.display = "inline-block";
-        } 
-        else if (index === 9) { // Gambar Terakhir
-          textElement.style.display = "none";
-          meme.src = images[1];
-          btn.style.display = "none";
-        }
-      }, 400);
+  class Particle {
+    constructor(x, y, color) {
+      this.x = x; this.y = y; this.color = color;
+      this.vel = { x: Math.random() * 6 - 3, y: Math.random() * 6 - 3 };
+      this.alpha = 1; this.friction = 0.95; this.gravity = 0.1;
+    }
+    draw() {
+      ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = this.color; ctx.fill();
+    }
+    update() {
+      this.vel.x *= this.friction; this.vel.y *= this.friction; this.vel.y += this.gravity;
+      this.x += this.vel.x; this.y += this.vel.y; this.alpha -= 0.015;
     }
   }
-</script>
 
+  function createFirework(x, y) {
+    const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+    for (let i = 0; i < 40; i++) particles.push(new Particle(x, y, color));
+  }
+
+  function animate() {
+    ctx.fillStyle = 'rgba(10, 10, 10, 0.2)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+      if (p.alpha <= 0) particles.splice(i, 1);
+      else { p.update(); p.draw(); }
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  function initSurprise() {
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+
+    // Munculkan kembang api acak
+    let fwInterval = setInterval(() => {
+      createFirework(Math.random() * canvas.width, Math.random() * canvas.height * 0.7);
+    }, 500);
+
+    // Alur kemunculan kue
+    setTimeout(() => {
+      document.getElementById('candle').style.display = 'block';
+      createFirework(window.innerWidth/2, window.innerHeight/2);
+    }, 1500);
+
+    // Munculkan Teks satu per satu
+    setTimeout(() => {
+      const words = ["Happy", "Birthday", "To", "You!"];
+      const colors = ["#FF69B4", "#00FFFF", "#FFD700", "#ADFF2F"];
+      const msg = document.getElementById('message');
+      
+      words.forEach((w, i) => {
+        setTimeout(() => {
+          const span = document.createElement('span');
+          span.innerText = w;
+          span.className = 'word';
+          span.style.color = colors[i];
+          msg.appendChild(span);
+          setTimeout(() => span.classList.add('pop'), 50);
+          createFirework(window.innerWidth/2 + (i * 20), window.innerHeight/2);
+        }, i * 600);
+      });
+    }, 2500);
+
+    // Stop kembang api otomatis setelah 10 detik agar tidak berat
+    setTimeout(() => clearInterval(fwInterval), 10000);
+  }
+</script>
 </body>
 </html>
