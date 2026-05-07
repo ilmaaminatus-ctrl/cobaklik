@@ -1,162 +1,182 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Birthday! ✨</title>
-  <style>
-    body {
-      margin: 0;
-      background: #0a0a0a;
-      overflow: hidden;
-      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
-    .content { position: relative; z-index: 1; text-align: center; display: none; }
-
-    /* Desain Kue Tingkat Mewah */
-    .cake-container { position: relative; margin: 0 auto; width: 200px; height: 180px; }
-    
-    .tier { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 10px 10px 5px 5px; box-shadow: inset 0 -5px rgba(0,0,0,0.1); }
-    
-    /* Tingkat Bawah */
-    .tier-1 { width: 160px; height: 50px; background: #FF69B4; bottom: 0; }
-    /* Tingkat Tengah */
-    .tier-2 { width: 120px; height: 45px; background: #FFB6C1; bottom: 50px; }
-    /* Tingkat Atas */
-    .tier-3 { width: 80px; height: 40px; background: #FFF0F5; bottom: 95px; }
-
-    /* Krim Meleh (Drip) */
-    .drip { position: absolute; width: 100%; height: 15px; background: #f0f0f0; border-radius: 0 0 10px 10px; top: 0; opacity: 0.8; }
-    
-    /* Stroberi di Atas */
-    .strawberry { position: absolute; width: 15px; height: 18px; background: #ff0000; border-radius: 50% 50% 40% 40%; top: -15px; left: 50%; transform: translateX(-50%); box-shadow: inset -2px -2px #b30000; }
-
-    /* Lilin Hidup */
-    .candle { position: absolute; width: 6px; height: 25px; background: #fff; top: -35px; left: 50%; transform: translateX(-50%); border-radius: 3px; display: none; }
-    .flame { position: absolute; width: 10px; height: 15px; background: #FFA500; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; top: -15px; left: -2px; animation: flicker 0.1s infinite alternate; box-shadow: 0 0 10px #FFD700; }
-
-    @keyframes flicker { from { transform: scale(1); } to { transform: scale(1.1); } }
-
-    /* Animasi Teks */
-    #message { font-size: 2.2rem; margin-top: 30px; min-height: 60px; font-weight: bold; }
-    .word { display: inline-block; opacity: 0; transform: scale(0.5); transition: 0.5s; margin: 0 5px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-    .word.pop { opacity: 1; transform: scale(1); }
-
-    .btn-start { padding: 15px 40px; font-size: 1.2rem; background: linear-gradient(45deg, #FF69B4, #FF1493); border: none; border-radius: 50px; color: white; cursor: pointer; box-shadow: 0 5px 20px rgba(255,20,147,0.4); z-index: 2; transition: 0.3s; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Best Part Love</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000 !important; overflow: hidden; }
+        canvas { display: block; }
+        
+        #overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 100; cursor: pointer;
+        }
+        .play-btn { font-size: 70px; filter: drop-shadow(0 0 20px #ff0055); animation: pulse 1.5s infinite; }
+        #overlay h1 { color: #ff0055; font-size: 0.9rem; letter-spacing: 4px; margin-top: 25px; font-family: sans-serif; font-weight: bold; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+    </style>
 </head>
 <body>
 
-<!-- Lagu Happy Birthday -->
-<audio id="hbdSong">
-  <source src="https://githubusercontent.com" type="audio/mpeg">
-  <!-- Jika link di atas tidak jalan, otomatis pakai cadangan instrumen tenang -->
-  <source src="https://bensound.com" type="audio/mpeg">
-</audio>
-
-<canvas id="fwCanvas"></canvas>
-
-<button class="btn-start" id="startBtn" onclick="initSurprise()">Buka Hadiah ✨</button>
-
-<div class="content" id="mainContent">
-  <div class="cake-container">
-    <div class="tier tier-1"><div class="drip"></div></div>
-    <div class="tier tier-2"><div class="drip"></div></div>
-    <div class="tier tier-3">
-      <div class="drip"></div>
-      <div class="strawberry"></div>
-      <div class="candle" id="candle">
-        <div class="flame"></div>
-      </div>
+    <div id="overlay" onclick="startApp()">
+        <div class="play-btn">❤️</div>
+        <h1>TAP TO START MUSIC</h1>
     </div>
-  </div>
-  <div id="message"></div>
-</div>
 
-<script>
-  const canvas = document.getElementById('fwCanvas');
-  const ctx = canvas.getContext('2d');
-  let particles = [];
+    <!-- AUDIO DENGAN PENGATURAN KHUSUS BROWSER HP -->
+    <audio id="myAudio" loop preload="auto" crossorigin="anonymous">
+        <source src="https://edgeone.app" type="audio/mpeg">
+    </audio>
 
-  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize);
-  resize();
+    <canvas id="canvas"></canvas>
 
-  class Particle {
-    constructor(x, y, color) {
-      this.x = x; this.y = y; this.color = color;
-      this.vel = { x: Math.random() * 6 - 3, y: Math.random() * 6 - 3 };
-      this.alpha = 1; this.friction = 0.95; this.gravity = 0.1;
-    }
-    draw() {
-      ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = this.color; ctx.fill();
-    }
-    update() {
-      this.vel.x *= this.friction; this.vel.y *= this.friction; this.vel.y += this.gravity;
-      this.x += this.vel.x; this.y += this.vel.y; this.alpha -= 0.012;
-    }
-  }
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const audio = document.getElementById('myAudio');
+        let isStarted = false;
 
-  function createFirework(x, y) {
-    const color = `hsl(${Math.random() * 360}, 100%, 65%)`;
-    for (let i = 0; i < 45; i++) particles.push(new Particle(x, y, color));
-  }
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-  function animate() {
-    ctx.fillStyle = 'rgba(10, 10, 10, 0.2)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    particles.forEach((p, i) => {
-      if (p.alpha <= 0) particles.splice(i, 1);
-      else { p.update(); p.draw(); }
-    });
-    requestAnimationFrame(animate);
-  }
-  animate();
+        let particles = [];
+        let stars = [];
+        let fireworks = [];
+        let showCount = 0;
+        let pulse = 0;
+        const colors = ['#ff0044', '#ff0066', '#ff3388', '#e600ff'];
 
-  function initSurprise() {
-    document.getElementById('startBtn').style.display = 'none';
-    document.getElementById('mainContent').style.display = 'block';
-    
-    // Putar Lagu
-    const song = document.getElementById('hbdSong');
-    song.play().catch(e => console.log("Musik butuh izin browser"));
+        function startApp() {
+            // Memaksa audio jalan (Fix untuk HP)
+            audio.play().then(() => {
+                console.log("Audio playing");
+            }).catch(err => {
+                console.log("Audio failed, link might be blocked", err);
+            });
+            
+            document.getElementById('overlay').style.display = 'none';
+            isStarted = true;
+        }
 
-    // Ledakan Kembang Api Awal
-    for(let i=0; i<5; i++) {
-        setTimeout(() => createFirework(Math.random()*canvas.width, Math.random()*canvas.height*0.5), i*300);
-    }
+        function getHeartPoint(t, scale) {
+            let x = 16 * Math.sin(t) ** 3;
+            let y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+            return { x: x * scale, y: y * scale };
+        }
 
-    // Munculkan Lilin
-    setTimeout(() => {
-      document.getElementById('candle').style.display = 'block';
-    }, 1000);
+        class Particle {
+            constructor(tx, ty, size, color) {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.tx = tx;
+                this.ty = ty;
+                this.size = size;
+                this.color = color;
+                this.speed = 0.015; 
+            }
+            update() {
+                this.x += (this.tx - this.x) * this.speed;
+                this.y += (this.ty - this.y) * this.speed;
+            }
+            draw() {
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
 
-    // Munculkan Teks Berwarna
-    setTimeout(() => {
-      const words = ["Happy", "Birthday", "To", "You!"];
-      const colors = ["#FF69B4", "#00F5FF", "#FFD700", "#32CD32"];
-      const msg = document.getElementById('message');
-      
-      words.forEach((w, i) => {
-        setTimeout(() => {
-          const span = document.createElement('span');
-          span.innerText = w;
-          span.className = 'word';
-          span.style.color = colors[i];
-          msg.appendChild(span);
-          setTimeout(() => span.classList.add('pop'), 50);
-          createFirework(window.innerWidth/2 + (i*10), window.innerHeight/2 - 50);
-        }, i * 600);
-      });
-    }, 1800);
-  }
-</script>
+        function init() {
+            particles = [];
+            stars = [];
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scaleBig = Math.min(canvas.width, canvas.height) / 25;
+
+            for (let i = 0; i < 750; i++) {
+                const t = (i / 750) * Math.PI * 2;
+                const pos = getHeartPoint(t, scaleBig);
+                const color = colors[Math.floor((i / 750) * colors.length)];
+                particles.push(new Particle(centerX + pos.x, centerY + pos.y, 2.8, color));
+            }
+
+            for (let i = 0; i < 120; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5, opacity: Math.random(),
+                    speed: 0.01 + Math.random() * 0.02
+                });
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.25)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(s => {
+                s.opacity += s.speed;
+                if (s.opacity > 1 || s.opacity < 0) s.speed *= -1;
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(s.opacity)})`;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+            });
+
+            if (isStarted) {
+                if (showCount < particles.length) showCount += 1.8;
+                for (let i = 0; i < Math.floor(showCount); i++) {
+                    if(particles[i]) {
+                        particles[i].update();
+                        particles[i].draw();
+                    }
+                }
+
+                if (showCount >= particles.length) {
+                    pulse += 0.04;
+                    let s = (Math.min(canvas.width, canvas.height) / 85) * (1 + Math.sin(pulse) * 0.1);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.shadowBlur = 40;
+                    ctx.shadowColor = "#ff0055";
+                    ctx.fillStyle = "rgba(255, 0, 85, 0.4)";
+                    for (let t = 0; t <= Math.PI * 2; t += 0.05) {
+                        const pos = getHeartPoint(t, s);
+                        if (t === 0) ctx.moveTo(canvas.width/2 + pos.x, canvas.height/2 + pos.y);
+                        else ctx.lineTo(canvas.width/2 + pos.x, canvas.height/2 + pos.y);
+                    }
+                    ctx.fill();
+                    ctx.restore();
+
+                    if (Math.random() < 0.1) {
+                        const x = Math.random() * canvas.width;
+                        const y = Math.random() * canvas.height;
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        for (let i = 0; i < 35; i++) {
+                            const angle = Math.random() * Math.PI * 2;
+                            const speed = Math.random() * 5 + 2;
+                            fireworks.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, alpha: 1, color });
+                        }
+                    }
+                }
+            }
+
+            fireworks.forEach((f, i) => {
+                f.x += f.vx; f.y += f.vy; f.alpha -= 0.012;
+                ctx.globalAlpha = f.alpha;
+                ctx.fillStyle = f.color;
+                ctx.beginPath(); ctx.arc(f.x, f.y, 1.5, 0, Math.PI * 2); ctx.fill();
+                ctx.globalAlpha = 1;
+                if (f.alpha <= 0) fireworks.splice(i, 1);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
 </body>
 </html>
