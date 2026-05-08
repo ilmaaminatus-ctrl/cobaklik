@@ -3,180 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Final Best Part Love</title>
+    <title>Kalkulator Keren - Buatan Saya</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000 !important; overflow: hidden; }
-        canvas { display: block; }
-        
-        #overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 100; cursor: pointer;
+        /* --- KODE CSS --- */
+        body {
+            background: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+            overflow: hidden;
         }
-        .play-btn { font-size: 70px; filter: drop-shadow(0 0 20px #ff0055); animation: pulse 1.5s infinite; }
-        #overlay h1 { color: #ff0055; font-size: 0.9rem; letter-spacing: 4px; margin-top: 25px; font-family: sans-serif; font-weight: bold; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
+        .kalkulator {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 320px;
+            border: 1px solid #333;
+        }
+
+        #layar {
+            width: 100%;
+            height: 60px;
+            background: none;
+            border: none;
+            color: white;
+            text-align: right;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .tombol-area {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            height: 60px;
+            border-radius: 15px;
+            border: none;
+            background: #333;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:active {
+            background: #555;
+            transform: scale(0.95);
+        }
+
+        .operator {
+            color: #ff9800;
+        }
+
+        .sama-dengan {
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+            grid-row: span 2;
+            height: 132px;
+            animation: warnaWarni 3s infinite alternate;
+        }
+
+        .nol {
+            grid-column: span 2;
+        }
+
+        .hapus {
+            color: #f44336;
+        }
+
+        @keyframes warnaWarni {
+            from { filter: hue-rotate(0deg); }
+            to { filter: hue-rotate(360deg); }
+        }
+
+        /* Efek Hover untuk Laptop/Desktop */
+        @media (minor-side: 600px) {
+            button:hover {
+                background: #444;
+                cursor: pointer;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div id="overlay" onclick="startApp()">
-        <div class="play-btn">❤️</div>
-        <h1>TAP TO START MUSIC</h1>
+    <!-- --- KODE HTML --- -->
+    <div class="kalkulator">
+        <input type="text" id="layar" readonly value="0">
+        <div class="tombol-area">
+            <button class="hapus" onclick="hapus()">C</button>
+            <button class="operator" onclick="input('/')">/</button>
+            <button class="operator" onclick="input('*')">x</button>
+            <button onclick="hapusSatu()">⌫</button>
+            
+            <button onclick="input('7')">7</button>
+            <button onclick="input('8')">8</button>
+            <button onclick="input('9')">9</button>
+            <button class="operator" onclick="input('-')">-</button>
+            
+            <button onclick="input('4')">4</button>
+            <button onclick="input('5')">5</button>
+            <button onclick="input('6')">6</button>
+            <button class="operator" onclick="input('+')">+</button>
+            
+            <button onclick="input('1')">1</button>
+            <button onclick="input('2')">2</button>
+            <button onclick="input('3')">3</button>
+            <button class="sama-dengan" onclick="hitung()">=</button>
+            
+            <button class="nol" onclick="input('0')">0</button>
+            <button onclick="input('.')">.</button>
+        </div>
     </div>
 
-    <!-- AUDIO DENGAN PENGATURAN KHUSUS BROWSER HP -->
-    <audio id="myAudio" loop preload="auto" crossorigin="anonymous">
-        <source src="https://edgeone.app" type="audio/mpeg">
-    </audio>
-
-    <canvas id="canvas"></canvas>
-
+    <!-- --- KODE JAVASCRIPT --- -->
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const audio = document.getElementById('myAudio');
-        let isStarted = false;
+        const layar = document.getElementById('layar');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        let particles = [];
-        let stars = [];
-        let fireworks = [];
-        let showCount = 0;
-        let pulse = 0;
-        const colors = ['#ff0044', '#ff0066', '#ff3388', '#e600ff'];
-
-        function startApp() {
-            // Memaksa audio jalan (Fix untuk HP)
-            audio.play().then(() => {
-                console.log("Audio playing");
-            }).catch(err => {
-                console.log("Audio failed, link might be blocked", err);
-            });
-            
-            document.getElementById('overlay').style.display = 'none';
-            isStarted = true;
-        }
-
-        function getHeartPoint(t, scale) {
-            let x = 16 * Math.sin(t) ** 3;
-            let y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-            return { x: x * scale, y: y * scale };
-        }
-
-        class Particle {
-            constructor(tx, ty, size, color) {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.tx = tx;
-                this.ty = ty;
-                this.size = size;
-                this.color = color;
-                this.speed = 0.015; 
-            }
-            update() {
-                this.x += (this.tx - this.x) * this.speed;
-                this.y += (this.ty - this.y) * this.speed;
-            }
-            draw() {
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
+        function input(nilai) {
+            if (layar.value === '0' || layar.value === 'Error') {
+                layar.value = nilai;
+            } else {
+                layar.value += nilai;
             }
         }
 
-        function init() {
-            particles = [];
-            stars = [];
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const scaleBig = Math.min(canvas.width, canvas.height) / 25;
-
-            for (let i = 0; i < 750; i++) {
-                const t = (i / 750) * Math.PI * 2;
-                const pos = getHeartPoint(t, scaleBig);
-                const color = colors[Math.floor((i / 750) * colors.length)];
-                particles.push(new Particle(centerX + pos.x, centerY + pos.y, 2.8, color));
-            }
-
-            for (let i = 0; i < 120; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                    size: Math.random() * 1.5, opacity: Math.random(),
-                    speed: 0.01 + Math.random() * 0.02
-                });
-            }
+        function hapus() {
+            layar.value = '0';
         }
 
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.25)'; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            stars.forEach(s => {
-                s.opacity += s.speed;
-                if (s.opacity > 1 || s.opacity < 0) s.speed *= -1;
-                ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(s.opacity)})`;
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
-            });
-
-            if (isStarted) {
-                if (showCount < particles.length) showCount += 1.8;
-                for (let i = 0; i < Math.floor(showCount); i++) {
-                    if(particles[i]) {
-                        particles[i].update();
-                        particles[i].draw();
-                    }
-                }
-
-                if (showCount >= particles.length) {
-                    pulse += 0.04;
-                    let s = (Math.min(canvas.width, canvas.height) / 85) * (1 + Math.sin(pulse) * 0.1);
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.shadowBlur = 40;
-                    ctx.shadowColor = "#ff0055";
-                    ctx.fillStyle = "rgba(255, 0, 85, 0.4)";
-                    for (let t = 0; t <= Math.PI * 2; t += 0.05) {
-                        const pos = getHeartPoint(t, s);
-                        if (t === 0) ctx.moveTo(canvas.width/2 + pos.x, canvas.height/2 + pos.y);
-                        else ctx.lineTo(canvas.width/2 + pos.x, canvas.height/2 + pos.y);
-                    }
-                    ctx.fill();
-                    ctx.restore();
-
-                    if (Math.random() < 0.1) {
-                        const x = Math.random() * canvas.width;
-                        const y = Math.random() * canvas.height;
-                        const color = colors[Math.floor(Math.random() * colors.length)];
-                        for (let i = 0; i < 35; i++) {
-                            const angle = Math.random() * Math.PI * 2;
-                            const speed = Math.random() * 5 + 2;
-                            fireworks.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, alpha: 1, color });
-                        }
-                    }
-                }
-            }
-
-            fireworks.forEach((f, i) => {
-                f.x += f.vx; f.y += f.vy; f.alpha -= 0.012;
-                ctx.globalAlpha = f.alpha;
-                ctx.fillStyle = f.color;
-                ctx.beginPath(); ctx.arc(f.x, f.y, 1.5, 0, Math.PI * 2); ctx.fill();
-                ctx.globalAlpha = 1;
-                if (f.alpha <= 0) fireworks.splice(i, 1);
-            });
-
-            requestAnimationFrame(animate);
+        function hapusSatu() {
+            layar.value = layar.value.slice(0, -1);
+            if (layar.value === '') layar.value = '0';
         }
 
-        init();
-        animate();
+        function hitung() {
+            try {
+                // eval() menghitung string matematika otomatis
+                let hasil = eval(layar.value);
+                // Membatasi angka di belakang koma agar tidak kepanjangan
+                layar.value = Number.isInteger(hasil) ? hasil : hasil.toFixed(2);
+            } catch (err) {
+                layar.value = "Error";
+                setTimeout(hapus, 1500);
+            }
+        }
     </script>
 </body>
 </html>
